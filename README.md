@@ -1,5 +1,19 @@
 
-# Prepare data
+# Assignment for Supply Chain Planning Course
+
+by Rutgers the State University of New Jersey
+
+
+The goal of this assignment is to implement the forecasting methods covered in this course. In addition to coming up with a forecast, you will be asked to interpret the data and forecast
+
+How to submit:
+
+1. Analyze the data contained, applying any forecasting method you believe will produce an accurate forecast.
+2. You will be required to submit your assignment using any statistics, graphs, and interpretations you produced from analyzing the data.
+3. Make sure to include any relevant statistics that are necessary to showcase your forecast.
+4. There is no need to include the actual forecasted values or any of the data.
+
+## Prepare data
 
 ### Downloading and reading data
 
