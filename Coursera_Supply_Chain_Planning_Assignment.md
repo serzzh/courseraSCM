@@ -176,10 +176,7 @@ We can find that moving average with optimal N parameter overall cathes trend bu
 
 ## Exponential Smoothing
 
-Finding optimal alpha for smoothing
-
-
-
+Optimal alpha and Exponential Smoothing Results
 
 <div>
 <style scoped>
@@ -245,30 +242,12 @@ Finding optimal alpha for smoothing
 
 
 
-We can find that the results of exponential smoothing is worse than moving average if using MSE metrics for all products except C, which results is very similar.
 
-
-```
-opt #Below the results of moving averave forecast which is better
-```
-
-
+Moving averave forecast results
 
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -319,9 +298,7 @@ opt #Below the results of moving averave forecast which is better
 
 
 
+We can find here that the results of exponential smoothing is worse than moving average if using MSE metrics for all products except C, which results is very similar.
+
 So on current data is better to use moving average.
 
-
-```
-
-```
