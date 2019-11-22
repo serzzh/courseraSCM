@@ -17,34 +17,8 @@ plt.rcParams["figure.figsize"] = (24,6)
 ### Downloading and reading data
 
 
-```
-url = "https://d3c33hcgiwev3.cloudfront.net/_dc27d596205cf8e528acb844f516e28b_Supply-Chain-Planning-Assignment-Data.csv?Expires=1574467200&Signature=VPZCN3Jm~KOMcOHCAcX7dZ11zHHzTQyqqJ4mzJvnD~h-3MwljnRTJ9uTA3Xpy0j8bekZ8EQmq8JOBZjwkxOCgYTqCXaWi3scAfJe8M64nwAe8EGhv9mGLgLXC7JS5DS9vKl3MtoBzfZmemHySZvxi~SznGZiT1mHeGL4Qfc~j50_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A"
-df = pd.read_csv(url, header='infer')
-df = df[df.columns[:5]].iloc[1:].apply(lambda x: x.str.replace(',',''))
-df.replace(' -   ', 0.0, inplace=True)
-df.columns = ['Date', 'Sales of A', 'Sales of B', 'Sales of C', 'Sales of D']
-df['Date'] = df['Date'].astype('datetime64[ns]')
-df = df.set_index('Date').apply(pd.to_numeric)
-df.head()
-```
-
-
-
-
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -107,23 +81,11 @@ df.head()
 ### Visualising data
 
 
-```
-fig, ax = plt.subplots(2, 2)
-ax[0, 0].plot(df['Sales of A'])
-ax[0, 0].set_title('Sales of A')
-ax[0, 1].plot(df['Sales of B'])
-ax[0, 1].set_title('Sales of B')
-ax[1, 0].plot(df['Sales of C'])
-ax[1, 0].set_title('Sales of C')
-ax[1, 1].plot(df['Sales of D'])
-ax[1, 1].set_title('Sales of D')
-```
 
 
 
 
-    Text(0.5, 1.0, 'Sales of D')
-
+ 
 
 
 
@@ -133,28 +95,7 @@ ax[1, 1].set_title('Sales of D')
 Probably we should aggregate data by month too gain more insights
 
 
-```
-df = df.resample('M').sum()
-df2 = df.copy()
-```
 
-
-```
-fig, ax = plt.subplots(2, 2)
-ax[0, 0].plot(df['Sales of A'])
-ax[0, 0].set_title('Sales of A')
-ax[0, 1].plot(df['Sales of B'])
-ax[0, 1].set_title('Sales of B')
-ax[1, 0].plot(df['Sales of C'])
-ax[1, 0].set_title('Sales of C')
-ax[1, 1].plot(df['Sales of D'])
-ax[1, 1].set_title('Sales of D')
-```
-
-
-
-
-    Text(0.5, 1.0, 'Sales of D')
 
 
 
@@ -176,82 +117,15 @@ Let's try to approximate our sales timeseries with following methods:
 Defining function for moving average
 
 
-```
-def mov_av(df, n=3):
-  df = df.rolling(n).mean().shift(1).round(0)[n:].astype(int)
-  df.columns = ['Mov.Av. of A', 'Mov.Av. of B', 'Mov.Av. of C', 'Mov.Av. of D']
-  return df
-```
-
 Finding optimal value for number of periods using MSE as main metriics
 
 
-```
-def err(x,y, metrics = 'mse'):
-  result = {
-      'me': lambda x, y: sum(x-y)/len(x), # Mean Error
-      'mape': lambda x, y: sum(abs(x-y)/x)/len(x), # Mean Absolute Percent Error
-      'mse': lambda x, y: sum((x-y)*(x-y))/len(x) # Mean Square Error
-      }[metrics](x,y)
-
-  return result
-```
-
-
-```
-def find_n(df, metrics = ['me', 'mape','mse']): #N optimization function
-  
-  out = []
-  n = range(1, 7)
-
-  for col in df.columns:
-    x = df[col]
-    errors = []
-    for a in n:
-        y = mov_av(x, a)
-        errors.append({'col': col,
-                      "N":a, 
-                      "me": err(x[1:-1], y[:-1], metrics='me'),
-                      "mape": err(x[1:-1], y[:-1], metrics='mape'),
-                      "mse": err(x[1:-1], y[:-1], metrics='mse')
-                      })
-        
-    er1 = pd.DataFrame.from_records(errors)
-    for m in metrics:
-      out.append(er1.iloc[er1[m].idxmin()])
-
-  return pd.DataFrame.from_records(out)
-
-```
-
-
-```
-er1 = find_n(df[['Sales of A', 'Sales of B', 'Sales of C', 'Sales of D']])
-```
-
-
-```
-opt = er1.iloc[er1.groupby('col')['mse'].idxmin()] # finding alpha with minimum MSE for all products
-opt
-```
 
 
 
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
