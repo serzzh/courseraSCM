@@ -1,16 +1,3 @@
-<a href="https://colab.research.google.com/github/serzzh/courseraSCM/blob/master/Coursera_Supply_Chain_Planning_Assignment.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
-
-
-```
-import pandas as pd
-import numpy as np
-%pylab inline
-plt.style.use("bmh")
-plt.rcParams["figure.figsize"] = (24,6)
-```
-
-    Populating the interactive namespace from numpy and matplotlib
-
 
 # Prepare data
 
@@ -179,36 +166,6 @@ Finding optimal value for number of periods using MSE as main metriics
 Calculating Moving Average with N calculated above
 
 
-```
-df = df.join(
-    mov_av(df, opt[opt.col=='Sales of A'].N.values[0])['Mov.Av. of A'], how='inner'
-    ).join(
-        mov_av(df, opt[opt.col=='Sales of B'].N.values[0])['Mov.Av. of B'], how='inner'
-    ).join(
-        mov_av(df, opt[opt.col=='Sales of C'].N.values[0])['Mov.Av. of C'], how='inner'
-    ).join(
-        mov_av(df, opt[opt.col=='Sales of D'].N.values[0])['Mov.Av. of D'], how='inner'
-    )
-```
-
-
-```
-fig, ax = plt.subplots(2, 2)
-ax[0, 0].plot(df[['Sales of A', 'Mov.Av. of A']])
-ax[0, 0].set_title('Sales of A, Mov.Av. of A')
-ax[0, 1].plot(df[['Sales of B', 'Mov.Av. of B']])
-ax[0, 1].set_title('Sales of B, Mov.Av. of B')
-ax[1, 0].plot(df[['Sales of C', 'Mov.Av. of C']])
-ax[1, 0].set_title('Sales of C, Mov.Av. of C')
-ax[1, 1].plot(df[['Sales of D', 'Mov.Av. of D']])
-ax[1, 1].set_title('Sales of D, Mov.Av. of D')
-```
-
-
-
-
-    Text(0.5, 1.0, 'Sales of D, Mov.Av. of D')
-
 
 
 
@@ -220,59 +177,6 @@ We can find that moving average with optimal N parameter overall cathes trend bu
 ## Exponential Smoothing
 
 Finding optimal alpha for smoothing
-
-
-```
-def round_half_up(n, decimals=0): # Excel-like rounding function
-    multiplier = 10 ** decimals
-    return math.floor(n*multiplier + 0.5) / multiplier
-```
-
-
-```
-def exp_av(df, cols, alpha): # Exponential Smoothing
-  ea = []
-  for i in range(len(df[cols])-1):
-    fc = ea[i-1] if i >0 else df[cols][0]
-    ea.append(round_half_up(df[cols][i]*alpha + fc*(1-alpha)))
-  return ea
-```
-
-
-```
-def find_alpha(df, metrics = ['me', 'mape','mse']): #Alpha optimization functio
-  
-  out = []
-  alpha = [k * 0.1 for k in range(0, 11)]
-  
-  for col in df.columns:
-    x = df[col]
-    errors = []
-    for a in alpha:
-        y = exp_av(df, col, a)
-        errors.append({'col': col,
-                      "alpha":a, 
-                      "me": err(x[1:-1], y[:-1], metrics='me'),
-                      "mape": err(x[1:-1], y[:-1], metrics='mape'),
-                      "mse": err(x[1:-1], y[:-1], metrics='mse')
-                      })
-        
-    er1 = pd.DataFrame.from_records(errors)
-    for m in metrics:
-      out.append(er1.iloc[er1[m].idxmin()])
-
-  return pd.DataFrame.from_records(out)
-```
-
-
-```
-er2 = find_alpha(df2[['Sales of A', 'Sales of B', 'Sales of C', 'Sales of D']])
-```
-
-
-```
-er2.iloc[er2.groupby('col')['mse'].idxmin()] # finding alpha with minimum MSE for all products
-```
 
 
 
