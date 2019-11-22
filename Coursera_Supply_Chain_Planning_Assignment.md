@@ -231,7 +231,7 @@ Optimal alpha and Exponential Smoothing Results
 
 
 
-Moving averave forecast results
+Optimal N periods and Moving Averave Forecast Results
 
 
 <div>
